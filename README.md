@@ -1,0 +1,1 @@
+This repository will house all of the exercises using SQL
