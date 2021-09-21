@@ -1,14 +1,17 @@
 -- Q2
 select * from employees
 where first_name in ('Irena', 'Vidya', 'Maya');
+    -- 709 records returned
 
 -- Q3
 select * from employees
 where first_name = 'irena' or first_name = 'vidya' or first_name = 'maya';
+    -- 709 records returned
 
 -- Q4
 select * from employees
 where (gender = 'm') and (first_name = 'irena' or first_name = 'vidya' or first_name = 'maya');
+    -- 441 records returned
 
 -- Q5
 select * from employees
