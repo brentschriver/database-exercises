@@ -196,3 +196,39 @@ have also soared in popularity. Use subqueries to display the titles of movies s
 select title from film
 where title like 'q%' or title like 'k%';
 /* 14. Use subqueries to display all actors who appear in the film Alone Trip. */
+select f.title, a.first_name, a.last_name from film as f
+join film_actor as fa on f.film_id = fa.film_id
+join actor as a on fa.actor_id = a.actor_id
+where title in (select title from film
+where title = 'Alone Trip');
+/* 15. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. */
+select c.first_name, c.last_name, c.email, co.country from customer as c
+join address as a on c.address_id = a.address_id
+join city as ci on a.city_id = ci.city_id
+join country as co on ci.country_id = co.country_id
+where country = 'canada';
+/* 16. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as famiy films. */
+select f.title, c.name from film as f
+join film_category as fc on f.film_id = fc.film_id
+join category as c on fc.category_id = c.category_id
+where name = 'family';
+/* 17. Write a query to display how much business, in dollars, each store brought in. */
+select s.store_id, sum(p.amount) as dollars from store as s
+join staff as st on s.store_id = st.store_id
+join payment as p on st.staff_id = p.staff_id
+group by store_id;
+/* 18. Write a query to display for each store its store ID, city, and country. */
+select s.store_id, c.city, co.country from store as s
+join address as a on s.address_id = a.address_id
+join city as c on a.city_id = c.city_id
+join country as co on c.country_id = co.country_id;
+/* 19. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, 
+inventory, payment, and rental.) */
+select cat.name, sum(p.amount) as gross_revenue from rental as r
+join payment as p on r.rental_id = p.rental_id
+join inventory as i on r.inventory_id = i.inventory_id
+join film_category as f on i.film_id = f.film_id
+join category as cat on f.category_id = cat.category_id
+group by cat.name
+order by gross_revenue desc
+limit 5;
