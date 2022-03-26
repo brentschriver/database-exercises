@@ -46,8 +46,8 @@ where password is null;
 /* a. Select the phone and district columns from the address table for addresses in California, England, Taipei, or West Java. */
 select phone, district from address
 where district in ('california', 'england', 'taipei', 'west java');
-/* b. Select the payment id, amount, and payment date columns from the payment table for payments made on 05/25/2005, 05/27/2005, and 05/29/2005. 
-(Use the IN operator and the DATE function, instead of the AND operator as in previous exercises.) */
+/* b. Select the payment id, amount, and payment date columns from the payment table for payments made on 05/25/2005, 05/27/2005, 
+and 05/29/2005. (Use the IN operator and the DATE function, instead of the AND operator as in previous exercises.) */
 select payment_id, amount, payment_date from payment
 where date(payment_date) in ('2005-05-25','2005-05-27','2005-05-29');
 /* c. Select all columns from the film table for films rated G, PG-13 or NC-17. */
@@ -55,9 +55,109 @@ select * from film
 where rating in ('g','pg-13','nc-17');
 
 /* 5. BETWEEN operator */
-/* a. Select all columns from the payment table for payments made between midnight 05/25/2005 and 1 second before midnight 05/26/2005. */
+/* a. Select all columns from the payment table for payments made between midnight 05/25/2005 and 1 second before 
+midnight 05/26/2005. */
 select * from payment
 where payment_date between '2005-05-25 23:59:59' and '2005-05-26 23:59:59';
-/* b. Select the film_id, title, and descrition columns from the film table for films where the length of the description is between 100 and 120. */
+/* b. Select the film_id, title, and descrition columns from the film table for films where the length of the description 
+is between 100 and 120. */
 select film_id, title, description, length(description) as length from film
 where length(description) between 100 and 120;
+
+/* LIKE operator */
+/* a. Select the following columns from the film table for rows where the description begins with "A Thoughtful". */
+select * from film
+where description like 'a thoughtful%';
+/* b. Select the following columns from the film table for rows where the description ends with the word "Boat". */
+select * from film
+where description like '%boat';
+/* c. Select the following columns from the film table where the description contains the word "Database" and the 
+length of the film is greater than 3 hours. */
+select * from film
+where description like '%database%';
+
+/* 7. LIMIT operator */
+/* a. Select all columns from the payment table and only include the first 20 rows. */
+select * from payment
+limit 20;
+/* b. Select the payment date and amount columns from the payment table for rows where 
+the payment amount is greater than 5, and only select rows whose zero-based index in the result set is between 1000-2000. */
+select payment_id, payment_date, amount from payment
+where amount > 5 and payment_id between 1000 and 2000;
+/* c. Select all columns from the customer table, limiting results to those where the zero-based index is between 101-200. */
+select * from customer
+where customer_id between 101 and 200;
+
+/* 8. ORDER BY statement */
+/* a. Select all columns from the film table and order rows by the length field in ascending order. */
+select * from film
+order by length;
+/* b. Select all distinct ratings from the film table ordered by rating in descending order. */
+select distinct rating from film
+order by rating desc;
+/* c. Select the payment date and amount columns from the payment table for the first 20 payments ordered by payment amount in descending order. */
+select payment_date, amount from payment
+order by amount desc
+limit 20;
+/* d. Select the title, description, special features, length, and rental duration columns from the film table for the first 10 films with behind the 
+scenes footage under 2 hours in length and a rental duration between 5 and 7 days, ordered by length in descending order. */
+select title, description, special_features, length, rental_duration from film
+where length < 120 and rental_duration between 5 and 7
+order by length desc
+limit 10;
+
+/* 9. JOINs */
+/* a. Select customer first_name/last_name and actor first_name/last_name columns from performing a left join between the customer and actor column 
+on the last_name column in each table. (i.e. customer.last_name = actor.last_name)
+Label customer first_name/last_name columns as customer_first_name/customer_last_name
+Label actor first_name/last_name columns in a similar fashion.
+returns correct number of records: 620 */
+select c.first_name as customer_first_name, c.last_name as customer_last_name, a.first_name as actor_first_name, a.last_name as actor_last_name from customer as c
+left join actor as a on c.last_name = a.last_name;
+/* b. Select the customer first_name/last_name and actor first_name/last_name columns from performing a /right join between the customer and 
+actor column on the last_name column in each table. (i.e. customer.last_name = actor.last_name)
+returns correct number of records: 200 */
+select c.first_name as customer_first_name, c.last_name as customer_last_name, a.first_name as actor_first_name, a.last_name as actor_last_name from customer as c
+right join actor as a on c.last_name = a.last_name;
+/* c. Select the customer first_name/last_name and actor first_name/last_name columns from performing an inner join between the customer and actor column 
+on the last_name column in each table. (i.e. customer.last_name = actor.last_name)
+returns correct number of records: 43 */
+select c.first_name as customer_first_name, c.last_name as customer_last_name, a.first_name as actor_first_name, a.last_name as actor_last_name from customer as c
+inner join actor as a on c.last_name = a.last_name;
+/* d. Select the city name and country name columns from the city table, performing a left join with the country table to get the country name column.
+Returns correct records: 600 */
+select ci.city, co.country from city as ci
+left join country as co on ci.country_id = co.country_id;
+/* e. Select the title, description, release year, and language name columns from the film table, performing a left join with the language table 
+to get the "language" column. Label the language.name column as "language"
+Returns 1000 rows */
+select f.title, f.description, f.release_year, l.name from film as f
+left join language as l on f.language_id = l.language_id;
+/* f. Select the first_name, last_name, address, address2, city name, district, and postal code columns from the staff table, 
+performing 2 left joins with the address table then the city table to get the address and city related columns.
+returns correct number of rows: 2 */
+select s.first_name, s.last_name, a.address, c.city, a.district, a.postal_code from staff as s
+left join address as a on s.address_id = a.address_id
+left join city as c on a.city_id = c.city_id;
+
+/* ADDITIONAL EXERCISES */
+/* 1. Display the first and last names in all lowercase of all the actors. */
+select lower(first_name) as first_name, lower(last_name) as last_name from actor;
+/* 2. You need to find the ID number, first name, and last name of an actor, of whom you know only the first name, "Joe." 
+What is one query would you could use to obtain this information? */
+select actor_id, first_name, last_name from actor
+where first_name = 'joe';
+/* 3. Find all actors whose last name contain the letters "gen": */
+select first_name, last_name from actor
+where last_name like '%gen%';
+/* 4. Find all actors whose last names contain the letters "li". This time, order the rows by last name and first name, in that order. */
+select first_name, last_name from actor
+where last_name like '%li%'
+order by last_name, first_name;
+/* 5. Using IN, display the country_id and country columns for the following countries: Afghanistan, Bangladesh, and China: */
+select country_id, country from country
+where country in ('Afghanistan', 'Bangladesh', 'China');
+/* 6. List the last names of all the actors, as well as how many actors have that last name. */
+select distinct(last_name), count((last_name)) from actor
+group by last_name;
+/* 7. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors */
