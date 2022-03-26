@@ -161,3 +161,38 @@ where country in ('Afghanistan', 'Bangladesh', 'China');
 select distinct(last_name), count((last_name)) from actor
 group by last_name;
 /* 7. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors */
+select last_name, count(*) from actor
+group by last_name
+having count(*) > 1;
+/* 8. You cannot locate the schema of the address table. Which query would you use to re-create it? */
+
+/* 9. Use JOIN to display the first and last names, as well as the address, of each staff member. */
+select s.first_name, s.last_name, a.address from staff as s
+join address as a on s.address_id = a.address_id;
+/* 10. Use JOIN to display the total amount rung up by each staff member in August of 2005. */
+select s.staff_id, sum(p.amount) as amount from staff as s
+join payment as p on s.staff_id = p.staff_id
+group by staff_id;
+/* 11. List each film and the number of actors who are listed for that film. */
+select f.title, count(fa.actor_id) as actor_count from film as f
+join film_actor as fa on f.film_id = fa.film_id
+group by title;
+
+select * from film
+where title = 'baked cleopatra';
+
+select * from film_actor
+where film_id = 50;
+
+select * from actor
+where actor_id = 70;
+/* 12. How many copies of the film Hunchback Impossible exist in the inventory system? */
+select f.title, count(i.film_id) from film as f
+join inventory as i on f.film_id = i.film_id
+group by i.film_id
+having title = 'Hunchback Impossible';
+/* 13. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q 
+have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English. */
+select title from film
+where title like 'q%' or title like 'k%';
+/* 14. Use subqueries to display all actors who appear in the film Alone Trip. */
